@@ -146,7 +146,7 @@ async def leave(ctx):
     else:
         await ctx.send("I am not in a voice channel.")
 
-@bot.command(aliases=[play])
+@bot.command(aliases=['play'])
 async def p(ctx, *, query: str):
     if ctx.author.voice:
         channel = ctx.author.voice.channel
@@ -190,7 +190,7 @@ async def p(ctx, *, query: str):
         guild_queues[ctx.guild.id].append({'title': f"{info['title']}" , 'url': url }) 
         await ctx.send(f"Added to queue: {info['title']}")
 
-@bot.command(aliases=[s])
+@bot.command(aliases=['s'])
 async def skip(ctx, _=None):
     """Skip the currently playing song."""
     voice_client = ctx.voice_client
@@ -225,7 +225,7 @@ async def skip(ctx, _=None):
         await ctx.send("No more songs in the queue.")
 
 
-@bot.command(aliases=[queue])
+@bot.command(aliases=['queue'])
 async def q(ctx):
     if ctx.guild.id not in guild_queues or not guild_queues[ctx.guild.id]:
         return await ctx.send("The queue is currently empty.")
@@ -244,7 +244,7 @@ async def q(ctx):
     await ctx.send(embed=embed)
 
 
-@bot.command(aliases=[download])
+@bot.command(aliases=['download'])
 async def skini(ctx, *, query: str):
     async with ctx.typing():
         try:
