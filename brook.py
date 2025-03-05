@@ -1,5 +1,4 @@
 import os
-import re
 import discord
 from discord.ext import commands
 from discord.ui import Button
@@ -101,17 +100,32 @@ class MusicControls(discord.ui.View):
 
         await self.ctx.typing()
         try:
+            ytdl_opts = {
+    'verbose': True,
+    'format': 'bestaudio/best',
+    'outtmpl': os.path.join(download_directory,'template.%(ext)s'),
+    'restrictfilenames': False,
+    'noplaylist': True,
+    'postprocessors': [{
+        'key': 'FFmpegExtractAudio',
+        'preferredcodec': 'mp3',
+        'preferredquality': '192',
+    }],
+
+}
             with youtube_dl.YoutubeDL(ytdl_opts) as ytdl:
                 info = ytdl.extract_info(f"ytsearch:{embed_description}", download=True)['entries'][0]
 
-                file_name = os.path.join(download_directory, info['title'] + '.mp3')
+                file_name = os.path.join(download_directory, 'template.mp3')
 
-                if os.path.exists(file_name):
-                    await self.ctx.send(file=discord.File(file_name))
-                    os.remove(file_name)  # Remove file after sending
-                else:
-                    await self.ctx.send("Failed to download the audio.")
-                    
+                await self.ctx.send(file=discord.File(file_name, filename=f"{info['title']}.mp3"))
+
+                # After sending the file, delete it
+                try:
+                    os.remove(file_name)
+                except Exception as delete_error:
+                    print(f"Error deleting file: {delete_error}")
+
         except Exception as e:
             await self.ctx.send(f"An error occurred: {str(e)}")
 @bot.event
